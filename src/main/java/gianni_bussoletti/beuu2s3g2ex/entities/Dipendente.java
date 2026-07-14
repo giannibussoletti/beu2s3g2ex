@@ -1,8 +1,15 @@
 package gianni_bussoletti.beuu2s3g2ex.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import gianni_bussoletti.beuu2s3g2ex.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -11,7 +18,8 @@ import java.util.UUID;
 @Entity
 @ToString
 @Table(name = "dipendenti")
-public class Dipendente {
+@JsonIgnoreProperties({"password"})
+public class Dipendente implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -27,6 +35,8 @@ public class Dipendente {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public Dipendente(String username, String nome, String cognome, String email, String password) {
         this.username = username;
@@ -34,5 +44,17 @@ public class Dipendente {
         this.cognome = cognome;
         this.email = email;
         this.password = password;
+        this.role = Role.USER;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 }
