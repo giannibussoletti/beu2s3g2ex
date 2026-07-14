@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class ViaggioControllers {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN')")
     public ViaggioResponseDTO saveViaggio(@RequestBody @Validated ViaggioDTO payload, BindingResult validation) {
         if (validation.hasErrors()) {
             List<String> validationErrors = validation.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
@@ -38,6 +40,7 @@ public class ViaggioControllers {
 
     @GetMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN', 'USER')")
     public Page<Viaggio> findAllViaggi(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -47,6 +50,7 @@ public class ViaggioControllers {
 
     @PatchMapping("/{statoViaggio}/stato")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN')")
     public void updateStatoViaggio(@PathVariable UUID statoViaggio, @RequestBody @Validated UpdateStatoViaggioDTO payload) {
         this.viaggioService.findByIdAndUpdate(statoViaggio, payload.statoViaggio());
     }

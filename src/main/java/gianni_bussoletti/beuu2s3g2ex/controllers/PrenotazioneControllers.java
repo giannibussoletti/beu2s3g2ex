@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class PrenotazioneControllers {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN'")
     public PrenotazioneResponseDTO saveNewPrenotazione(@RequestBody @Validated PrenotazioniDTO payload, BindingResult validation) {
         if (validation.hasErrors()) {
             List<String> validationErrors = validation.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
@@ -36,6 +38,7 @@ public class PrenotazioneControllers {
 
     @GetMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN')")
     public Page<Prenotazione> findAllPrenotazioni(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
