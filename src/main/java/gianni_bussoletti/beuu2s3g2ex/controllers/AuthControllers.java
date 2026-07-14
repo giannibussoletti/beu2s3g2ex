@@ -16,6 +16,7 @@ public class AuthControllers {
 
     private final AuthService authService;
 
+
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginDTO body) {
         String token = this.authService.credentialControlAndGeneratorToken(body);

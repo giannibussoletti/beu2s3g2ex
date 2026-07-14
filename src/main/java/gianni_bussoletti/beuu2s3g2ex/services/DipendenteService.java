@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class DipendenteService {
 
     private DipendeteRepository dipendeteRepository;
+    private PasswordEncoder bcrypt;
 
     //    SAVING POST REQUEST
     public Dipendente save(DipendenteDTO payload) {
@@ -28,7 +30,7 @@ public class DipendenteService {
         if (this.dipendeteRepository.existsByUsername(payload.username()))
             throw new UsernameAlreadyExistsException("Questo username esiste già nel Database");
 
-        Dipendente newDipendente = new Dipendente(payload.username(), payload.nome(), payload.cognome(), payload.email(), payload.password());
+        Dipendente newDipendente = new Dipendente(payload.username(), payload.nome(), payload.cognome(), payload.email(), this.bcrypt.encode(payload.password()));
         return this.dipendeteRepository.save(newDipendente);
 
     }
