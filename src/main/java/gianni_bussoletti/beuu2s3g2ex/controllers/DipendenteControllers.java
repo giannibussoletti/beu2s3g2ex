@@ -28,7 +28,7 @@ public class DipendenteControllers {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN'")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN'")
     public DipendenteResponseDTO save(@RequestBody @Validated DipendenteDTO payload, BindingResult validation) {
         if (validation.hasErrors()) {
             List<String> errorsMessage = validation.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
